@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import fr.epsi.i4.myapplication.helper.InternalStorageFile;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -166,20 +168,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onAnswerButtonClick(View view) {
+
         TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
+        InternalStorageFile isf = new InternalStorageFile();
+
         switch (view.getId()) {
+
             case R.id.yesBtn : mTextView.setText("\n\n"+"yesBtn");
+                //data to write
+                //String data = "\n yesBtn"; isf.writeFile("knowledge_base",data,this.getApplicationContext());
                 break;
+
             case R.id.noBtn : mTextView.setText("\n\n"+"noBtn");
+                //String text = isf.readFile(this.getApplicationContext(),"knowledge_base.xml"); Log.e(TAG,text);
                 break;
+
             case R.id.don_t_knowBtn : mTextView.setText("\n\n"+"don_t_knowBtn");
+                //String text = isf.readRawResource(this.getResources()); Log.e(TAG,text);
                 break;
+
             case R.id.probablyBtn : mTextView.setText("\n\n"+"probablyBtn");
                 break;
+
             case R.id.probably_notBtn : mTextView.setText("\n\n"+"probably_notBtn");
                 break;
+
             case R.id.aboutBtn : mTextView.setText("\n\n"+"aboutBtn");
                 break;
+
             default: Log.e(TAG,"invalid button");
                 break;
         }

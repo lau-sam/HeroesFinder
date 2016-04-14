@@ -1,6 +1,9 @@
 <resources>
-    <string name="app_name">My Application</string>
-
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="app_name">Heroes Finder</string>
+    <string name="aboutBtn">About Us</string>
+    <string name="question_content">\n\nMAIN CONTENT</string>
+    <string name="probably_not">Probably not</string>
+    <string name="probably">Probably</string>
+    <string name="don_t_know">Don\'t Know</string>
+    <string name="yes">Yes</string>
 </resources>

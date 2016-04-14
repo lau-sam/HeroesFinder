@@ -5,8 +5,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
      * and a change of the status and navigation bar.
      */
     private static final int UI_ANIMATION_DELAY = 300;
+    private static final String TAG = "MainActivity";
     private final Handler mHideHandler = new Handler();
     private View mContentView;
     private final Runnable mHidePart2Runnable = new Runnable() {
@@ -95,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new View.OnClickListener() {
+        mContentView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggle();
@@ -105,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        findViewById(R.id.aboutBtn).setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
@@ -159,5 +163,25 @@ public class MainActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    public void onAnswerButtonClick(View view) {
+        TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
+        switch (view.getId()) {
+            case R.id.yesBtn : mTextView.setText("\n\n"+"yesBtn");
+                break;
+            case R.id.noBtn : mTextView.setText("\n\n"+"noBtn");
+                break;
+            case R.id.don_t_knowBtn : mTextView.setText("\n\n"+"don_t_knowBtn");
+                break;
+            case R.id.probablyBtn : mTextView.setText("\n\n"+"probablyBtn");
+                break;
+            case R.id.probably_notBtn : mTextView.setText("\n\n"+"probably_notBtn");
+                break;
+            case R.id.aboutBtn : mTextView.setText("\n\n"+"aboutBtn");
+                break;
+            default: Log.e(TAG,"invalid button");
+                break;
+        }
     }
 }

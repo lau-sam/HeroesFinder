@@ -21,24 +21,31 @@ public class ScoringMotorUnitTest {
     @Test
     public void shouldRemoveCharacterOnList(){
 
-        //character to test
-        Character characterToRemove = new Character("Superman",new Feature("sexeMan",true), 0);
+        //characterToRemove features set
+        ArrayList<Feature> characterToRemoveFeatures = new ArrayList<Feature>();
+        characterToRemoveFeatures.add(new Feature("sexeMan",true));
+        characterToRemoveFeatures.add(new Feature("redColor",true));
+        characterToRemoveFeatures.add(new Feature("haveWeapon",true));
+        characterToRemoveFeatures.add(new Feature("bad",true));
+        characterToRemoveFeatures.add(new Feature("transforms",true));
+        //characterToRemove set
+        Character characterToRemove = new Character("Superman",characterToRemoveFeatures, 0);
+
+        //Data to test
+        Character superman = new Character("Superman",characterToRemoveFeatures, 10);
+        Character batman = new Character("Batman",characterToRemoveFeatures, 10);
+        Character hellboy = new Character("Hellboy",characterToRemoveFeatures, 20);
+        Character hulk = new Character("Hulk",characterToRemoveFeatures, 30);
+        Character ironman = new Character("Ironman",characterToRemoveFeatures, 40);
+        Character harrypotter = new Character("HarryPotter",characterToRemoveFeatures, 50);
+        Character sangoku = new Character("Sangoku",characterToRemoveFeatures, 60);
+        Character shrek = new Character("Shrek",characterToRemoveFeatures, 80);
+        Character tombraider = new Character("TombRaider",characterToRemoveFeatures, 10);
+        Character catwoman = new Character("Catwoman",characterToRemoveFeatures, 20);
+
 
         //list characters still on race
         ArrayList<Character> characters = new ArrayList<Character>();
-
-        //Data to test
-        Character superman = new Character("Superman",new Feature("sexeMan",true), 10);
-        Character batman = new Character("Batman",new Feature("sexeMan",true), 10);
-        Character hellboy = new Character("Hellboy",new Feature("sexeMan",true), 20);
-        Character hulk = new Character("Hulk",new Feature("sexeMan",true), 30);
-        Character ironman = new Character("Ironman",new Feature("sexeMan",true), 40);
-        Character harrypotter = new Character("HarryPotter",new Feature("sexeMan",true), 50);
-        Character sangoku = new Character("Sangoku",new Feature("sexeMan",true), 60);
-        Character shrek = new Character("Shrek",new Feature("sexeMan",true), 80);
-        Character tombraider = new Character("TombRaider",new Feature("sexeMan",false), 10);
-        Character catwoman = new Character("Catwoman",new Feature("sexeMan",false), 20);
-
         characters.add(batman);
         characters.add(hellboy);
         characters.add(hulk);
@@ -50,7 +57,9 @@ public class ScoringMotorUnitTest {
         characters.add(tombraider);
         characters.add(catwoman);
 
-        boolean done = sm.removeCharacterOnList(characterToRemove, characters);
+        sm.set_characters(characters);
+
+        boolean done = sm.removeCharacterOnList(characterToRemove);
 
         assertEquals(true,done);
     }

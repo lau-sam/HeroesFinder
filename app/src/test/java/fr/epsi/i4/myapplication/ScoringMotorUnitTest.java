@@ -3,6 +3,7 @@ package fr.epsi.i4.myapplication;
 import org.junit.Test;
 
 import fr.epsi.i4.myapplication.helper.ScoringMotor;
+import fr.epsi.i4.myapplication.model.Character;
 
 import static org.junit.Assert.*;
 
@@ -12,8 +13,7 @@ import static org.junit.Assert.*;
 public class ScoringMotorUnitTest {
 
     @Test
-    public void shouldQuestionRemovePersonnage(){
-        String questionOne = "sexeMan";
+    public void shouldQuestionRemoveCharacterOnCharactersStillOnRaceList(){
 
     }
 }

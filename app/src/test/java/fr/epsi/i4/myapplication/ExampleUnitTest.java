@@ -11,14 +11,4 @@ import static org.junit.Assert.*;
  */
 public class ExampleUnitTest {
 
-    @Test
-    public void shouldAdd(){
-        int a = 3;
-        int b = 4;
-
-        ScoringMotor sm = new ScoringMotor();
-
-        int addResult = sm.add(a,b);
-        assertEquals(7,addResult);
-    }
 }

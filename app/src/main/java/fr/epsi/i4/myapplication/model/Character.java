@@ -8,6 +8,16 @@ public class Character {
     private String _characterName;
     private Feature _characterFeature;
 
+    public Character(){
+
+    }
+
+    public Character(int characterId, String characterName, Feature characterFeature){
+        this._characterId = characterId;
+        this._characterName = characterName;
+        this._characterFeature = characterFeature;
+    }
+
     public int get_characterId() {
         return _characterId;
     }

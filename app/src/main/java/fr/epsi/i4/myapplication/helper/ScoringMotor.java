@@ -1,10 +1,16 @@
 package fr.epsi.i4.myapplication.helper;
 
+import android.content.Context;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import fr.epsi.i4.myapplication.R;
 import fr.epsi.i4.myapplication.model.Character;
 import fr.epsi.i4.myapplication.model.Feature;
 
@@ -13,6 +19,7 @@ import fr.epsi.i4.myapplication.model.Feature;
  */
 public class ScoringMotor {
 
+    private static final String TAG = "ScoringMotor";
     private ArrayList<Character> _characters;
     private ArrayList<Feature> _features;
 

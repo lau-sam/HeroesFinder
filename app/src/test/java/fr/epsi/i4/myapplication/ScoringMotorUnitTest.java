@@ -1,5 +1,8 @@
 package fr.epsi.i4.myapplication;
 
+import android.content.Context;
+import android.test.mock.MockContext;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -122,23 +125,20 @@ public class ScoringMotorUnitTest {
     public void shouldRemoveCharactersNotInUserAnswer(){
 
         //GIVEN
-        Feature sexeMan = new Feature("sexeMan",true);
-        Feature redColor = new Feature("redColor",true);
         //featuresIn set
-        ArrayList<Feature> featuresIn = new ArrayList<Feature>();
-        featuresIn.add(sexeMan);
-        featuresIn.add(redColor);
+        ArrayList<Feature> featuresIn = new ArrayList<>();
+        featuresIn.add(new Feature("sexeMan",true));
+        featuresIn.add(new Feature("redColor",true));
 
         //featuresOut1 set
-        ArrayList<Feature> featuresOut1 = new ArrayList<Feature>();
+        ArrayList<Feature> featuresOut1 = new ArrayList<>();
         featuresOut1.add(new Feature("sexeMan",false));
-        featuresOut1.add(new Feature("redColor",true));
+        featuresOut1.add(new Feature("redColor",false));
 
         //featuresOut2 set
-        ArrayList<Feature> featuresOut2 = new ArrayList<Feature>();
-        featuresOut2.add(new Feature("sexeMan",false));
+        ArrayList<Feature> featuresOut2 = new ArrayList<>();
+        featuresOut2.add(new Feature("sexeMan",true));
         featuresOut2.add(new Feature("redColor",false));
-
 
 
         //4 characters in
@@ -148,19 +148,18 @@ public class ScoringMotorUnitTest {
         Character hulk = new Character("Hulk",featuresIn, 5);
 
         //4 characters filter by featuresOut1
-        Character ironman = new Character("Ironman",featuresIn, 6);
-        Character harrypotter = new Character("HarryPotter",featuresIn, 7);
-        Character sangoku = new Character("Sangoku",featuresIn, 9);
-        Character shrek = new Character("Shrek",featuresIn, 6);
+        Character ironman = new Character("Ironman",featuresOut1, 6);
+        Character harrypotter = new Character("HarryPotter",featuresOut1, 7);
+        Character sangoku = new Character("Sangoku",featuresOut1, 9);
+        Character shrek = new Character("Shrek",featuresOut1, 6);
 
         //2 characters filter by featuresOut2
-        Character tombraider = new Character("TombRaider",featuresIn, 10);
-        Character catwoman = new Character("Catwoman",featuresIn, 7);
-
+        Character tombraider = new Character("TombRaider",featuresOut2, 10);
+        Character catwoman = new Character("Catwoman",featuresOut2, 7);
 
 
         //list characters still on race
-        ArrayList<Character> characters = new ArrayList<Character>();
+        ArrayList<Character> characters = new ArrayList<>();
         characters.add(batman);
         characters.add(hellboy);
         characters.add(hulk);
@@ -176,12 +175,13 @@ public class ScoringMotorUnitTest {
 
         //WHEN
         int startSize = sm.get_characters().size();
-        sm.removeCharactersNotInUserAnswer(sexeMan);
+        sm.removeCharactersNotInUserAnswer(new Feature("sexeMan",true));
 
         int middleSize = sm.get_characters().size();
-        sm.removeCharactersNotInUserAnswer(redColor);
+        sm.removeCharactersNotInUserAnswer(new Feature("redColor",true));
 
         //THEN
         assertEquals( "10 6 4", startSize + " " + middleSize + " " + characters.size() );
+
     }
 }

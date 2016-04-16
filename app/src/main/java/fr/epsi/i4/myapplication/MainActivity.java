@@ -171,20 +171,19 @@ public class MainActivity extends AppCompatActivity {
 
         TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
         InternalStorageFile isf = new InternalStorageFile();
+        String text = "";
 
         switch (view.getId()) {
 
             case R.id.yesBtn : mTextView.setText("\n\n"+"yesBtn");
-                //data to write
-                //String data = "\n yesBtn"; isf.writeFile("knowledge_base",data,this.getApplicationContext());
                 break;
 
             case R.id.noBtn : mTextView.setText("\n\n"+"noBtn");
-                //String text = isf.readFile(this.getApplicationContext(),"knowledge_base.xml"); Log.e(TAG,text);
+                Log.e(TAG,text);
                 break;
 
             case R.id.don_t_knowBtn : mTextView.setText("\n\n"+"don_t_knowBtn");
-                //String text = isf.readRawResource(this.getResources()); Log.e(TAG,text);
+                Log.e(TAG,text);
                 break;
 
             case R.id.probablyBtn : mTextView.setText("\n\n"+"probablyBtn");

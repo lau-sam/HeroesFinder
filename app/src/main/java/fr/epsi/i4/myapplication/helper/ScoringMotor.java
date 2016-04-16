@@ -1,5 +1,7 @@
 package fr.epsi.i4.myapplication.helper;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -25,19 +27,40 @@ public class ScoringMotor {
     }
 
     //usefull methods
-    public boolean removeCharacterOnList(Character characterToRemove){
-
-        boolean done = false;
+    public void removeCharacterOnList(Character characterToRemove){
 
         Iterator<Character> it = this._characters.iterator();
         while (it.hasNext()) {
             if (it.next().get_characterName().equals(characterToRemove.get_characterName())) {
                 it.remove();
-                done = true;
                 break;
             }
         }
-        return done;
+    }
+
+    public void removeCharactersWithScoreHigh(int score){
+        Iterator<Character> it = this._characters.iterator();
+        while (it.hasNext()) {
+            if (it.next().get_characterScore() <= score) {
+                it.remove();
+            }
+        }
+    }
+
+    public void removeCharactersNotInUserAnswer(Feature userAnswer){
+        Iterator<Character> it = this._characters.iterator();
+        while (it.hasNext()) {
+            ArrayList<Feature> characterFeatures = it.next().get_characterFeatures();
+            Iterator<Feature> itFeature = characterFeatures.iterator();
+            while (itFeature.hasNext()){
+                Feature currentFeature = itFeature.next();
+                if(currentFeature.get_featureLabel() == userAnswer.get_featureLabel()){
+                    if ( currentFeature.is_featureChoice() != userAnswer.is_featureChoice()){
+                        it.remove();
+                    }
+                }
+            }
+        }
     }
 
     public ArrayList<Character> get_characters() {

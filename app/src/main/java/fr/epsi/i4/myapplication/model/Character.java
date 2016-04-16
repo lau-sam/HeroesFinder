@@ -4,8 +4,17 @@ package fr.epsi.i4.myapplication.model;
  * Created by tuannguyen on 14/04/16.
  */
 public class Character {
+    private int _characterId;
     private String _characterName;
     private Feature _characterFeature;
+
+    public int get_characterId() {
+        return _characterId;
+    }
+
+    public void set_characterId(int _characterId) {
+        this._characterId = _characterId;
+    }
 
     public String get_characterName() {
         return _characterName;

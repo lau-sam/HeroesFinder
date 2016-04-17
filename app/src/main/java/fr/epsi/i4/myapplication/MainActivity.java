@@ -116,10 +116,6 @@ public class MainActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.aboutBtn).setOnTouchListener(mDelayHideTouchListener);
-
-        InternalStorageFile internalStorageFile = new InternalStorageFile();
-        internalStorageFile.read(getApplicationContext());
-
     }
 
     @Override

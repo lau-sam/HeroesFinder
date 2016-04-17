@@ -1,8 +1,16 @@
 package fr.epsi.i4.myapplication.helper;
 
+import android.content.Context;
+import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import fr.epsi.i4.myapplication.R;
 import fr.epsi.i4.myapplication.model.Character;
 import fr.epsi.i4.myapplication.model.Feature;
 
@@ -11,6 +19,7 @@ import fr.epsi.i4.myapplication.model.Feature;
  */
 public class ScoringMotor {
 
+    private static final String TAG = "ScoringMotor";
     private ArrayList<Character> _characters;
     private ArrayList<Feature> _features;
 
@@ -25,19 +34,40 @@ public class ScoringMotor {
     }
 
     //usefull methods
-    public boolean removeCharacterOnList(Character characterToRemove){
-
-        boolean done = false;
+    public void removeCharacterOnList(Character characterToRemove){
 
         Iterator<Character> it = this._characters.iterator();
         while (it.hasNext()) {
             if (it.next().get_characterName().equals(characterToRemove.get_characterName())) {
                 it.remove();
-                done = true;
                 break;
             }
         }
-        return done;
+    }
+
+    public void removeCharactersWithScoreHigh(int score){
+        Iterator<Character> it = this._characters.iterator();
+        while (it.hasNext()) {
+            if (it.next().get_characterScore() <= score) {
+                it.remove();
+            }
+        }
+    }
+
+    public void removeCharactersNotInUserAnswer(Feature userAnswer){
+        Iterator<Character> it = this._characters.iterator();
+        while (it.hasNext()) {
+            ArrayList<Feature> characterFeatures = it.next().get_characterFeatures();
+            Iterator<Feature> itFeature = characterFeatures.iterator();
+            while (itFeature.hasNext()){
+                Feature currentFeature = itFeature.next();
+                if(currentFeature.get_featureLabel() == userAnswer.get_featureLabel()){
+                    if ( currentFeature.is_featureChoice() != userAnswer.is_featureChoice()){
+                        it.remove();
+                    }
+                }
+            }
+        }
     }
 
     public ArrayList<Character> get_characters() {

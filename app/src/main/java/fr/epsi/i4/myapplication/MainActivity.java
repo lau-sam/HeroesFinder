@@ -11,7 +11,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import fr.epsi.i4.myapplication.helper.InternalStorageFile;
+import fr.epsi.i4.myapplication.helper.ScoringMotor;
+import fr.epsi.i4.myapplication.model.Character;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -179,24 +183,32 @@ public class MainActivity extends AppCompatActivity {
 
         switch (view.getId()) {
 
-            case R.id.yesBtn : mTextView.setText("\n\n"+"yesBtn");
+            case R.id.yesBtn :
+                Log.e(TAG,"yesBtn");
+                mTextView.setText("\n\n"+"yesBtn");
+                ArrayList<Character> characters = isf.getCharactersFromCSVFormat(this.getApplicationContext());
                 break;
 
-            case R.id.noBtn : mTextView.setText("\n\n"+"noBtn");
-                Log.e(TAG,text);
+            case R.id.noBtn :
+                Log.e(TAG,"noBtn");
+                mTextView.setText("\n\n"+"noBtn");
                 break;
 
-            case R.id.don_t_knowBtn : mTextView.setText("\n\n"+"don_t_knowBtn");
-                Log.e(TAG,text);
+            case R.id.don_t_knowBtn :
+                Log.e(TAG,"don_t_knowBtn");
+                mTextView.setText("\n\n"+"don_t_knowBtn");
                 break;
 
-            case R.id.probablyBtn : mTextView.setText("\n\n"+"probablyBtn");
+            case R.id.probablyBtn :
+                mTextView.setText("\n\n"+"probablyBtn");
                 break;
 
-            case R.id.probably_notBtn : mTextView.setText("\n\n"+"probably_notBtn");
+            case R.id.probably_notBtn :
+                mTextView.setText("\n\n"+"probably_notBtn");
                 break;
 
-            case R.id.aboutBtn : mTextView.setText("\n\n"+"aboutBtn");
+            case R.id.aboutBtn :
+                mTextView.setText("\n\n"+"aboutBtn");
                 break;
 
             default: Log.e(TAG,"invalid button");

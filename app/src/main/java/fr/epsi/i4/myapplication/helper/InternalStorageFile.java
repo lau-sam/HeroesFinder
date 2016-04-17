@@ -21,6 +21,7 @@ import fr.epsi.i4.myapplication.R;
 import fr.epsi.i4.myapplication.model.Character;
 import fr.epsi.i4.myapplication.model.Feature;
 
+
 /**
  * Created by tuannguyen on 14/04/16.
  */

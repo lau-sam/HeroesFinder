@@ -53,9 +53,6 @@ public class InternalStorageFile {
                 }
                 charactersList.add(character);
             }
-            for(Character character : charactersList){
-                Log.e("name", character.get_characterName());
-            }
         }
         catch (IOException ex) {
             throw new RuntimeException("Error in reading CSV file: "+ex);

@@ -1,16 +1,10 @@
 package fr.epsi.i4.myapplication.helper;
 
-import android.content.Context;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import fr.epsi.i4.myapplication.R;
 import fr.epsi.i4.myapplication.model.Character;
 import fr.epsi.i4.myapplication.model.Feature;
 
@@ -21,24 +15,22 @@ public class ScoringMotor {
 
     private static final String TAG = "ScoringMotor";
     private ArrayList<Character> _characters;
-    private ArrayList<Feature> _features;
 
     public ScoringMotor(){
 
     }
 
-    public ScoringMotor(ArrayList<Character> characters, ArrayList<Feature> features){
+    public ScoringMotor(ArrayList<Character> characters){
         this.set_characters(characters);
-        this.set_features(features);
 
     }
 
     //usefull methods
-    public void removeCharacterOnList(Character characterToRemove){
+    public void removeCharacterOnList(String characterToRemoveName){
 
         Iterator<Character> it = this._characters.iterator();
         while (it.hasNext()) {
-            if (it.next().get_characterName().equals(characterToRemove.get_characterName())) {
+            if (it.next().get_characterName().equals(characterToRemoveName)) {
                 it.remove();
                 break;
             }
@@ -55,17 +47,15 @@ public class ScoringMotor {
     }
 
     public void removeCharactersNotInUserAnswer(Feature userAnswer){
-        Iterator<Character> it = this._characters.iterator();
-        while (it.hasNext()) {
-            ArrayList<Feature> characterFeatures = it.next().get_characterFeatures();
-            Iterator<Feature> itFeature = characterFeatures.iterator();
-            while (itFeature.hasNext()){
-                Feature currentFeature = itFeature.next();
-                if(currentFeature.get_featureLabel() == userAnswer.get_featureLabel()){
-                    if ( currentFeature.is_featureChoice() != userAnswer.is_featureChoice()){
-                        it.remove();
-                    }
-                }
+
+        Iterator<Character> itCharacters = this._characters.iterator();
+
+        while (itCharacters.hasNext()) {
+            Character currentCharacter = itCharacters.next();
+            ArrayList<Feature> characterFeatures = currentCharacter.get_characterFeatures();
+
+            if(characterFeatures.contains(userAnswer)) {
+                itCharacters.remove();
             }
         }
     }
@@ -78,11 +68,4 @@ public class ScoringMotor {
         this._characters = _characters;
     }
 
-    public ArrayList<Feature> get_features() {
-        return _features;
-    }
-
-    public void set_features(ArrayList<Feature> _features) {
-        this._features = _features;
-    }
 }

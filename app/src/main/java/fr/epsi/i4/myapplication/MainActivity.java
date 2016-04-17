@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import fr.epsi.i4.myapplication.helper.InternalStorageFile;
 import fr.epsi.i4.myapplication.helper.ScoringMotor;
 import fr.epsi.i4.myapplication.model.Character;
+import fr.epsi.i4.myapplication.model.Feature;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -93,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    // Init helpers
+    private final InternalStorageFile isf = new InternalStorageFile();;
+    private ScoringMotor sm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +121,11 @@ public class MainActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.aboutBtn).setOnTouchListener(mDelayHideTouchListener);
+
+        // set characters with all characters on CharactersList.csv (knowledge database)
+        ArrayList<Character> characters = isf.getCharactersFromCSVFormat(this.getApplicationContext());
+        // init scoring motor with characters
+        sm = new ScoringMotor(characters);
     }
 
     @Override
@@ -174,23 +184,26 @@ public class MainActivity extends AppCompatActivity {
     public void onAnswerButtonClick(View view) {
 
         TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
-        InternalStorageFile isf = new InternalStorageFile();
-        String text = "";
 
         switch (view.getId()) {
 
             case R.id.yesBtn :
                 Log.e(TAG,"yesBtn");
                 mTextView.setText("\n\n"+"yesBtn");
-                ArrayList<Character> characters = isf.getCharactersFromCSVFormat(this.getApplicationContext());
-                /*for(Character character : characters){
+                for(Character character : sm.get_characters()){
                     Log.e("name : ", character.get_characterName());
-                }*/
+                }
                 break;
 
             case R.id.noBtn :
                 Log.e(TAG,"noBtn");
                 mTextView.setText("\n\n"+"noBtn");
+
+                // userAnser is every men
+                Feature userAnswer = new Feature("sexe_M",false);
+                //remove every men on the list
+                sm.removeCharactersNotInUserAnswer(userAnswer);
+
                 break;
 
             case R.id.don_t_knowBtn :

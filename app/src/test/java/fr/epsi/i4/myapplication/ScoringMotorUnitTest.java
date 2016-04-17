@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import fr.epsi.i4.myapplication.helper.InternalStorageFile;
 import fr.epsi.i4.myapplication.helper.ScoringMotor;
 import fr.epsi.i4.myapplication.model.Character;
 import fr.epsi.i4.myapplication.model.Feature;
@@ -24,6 +25,8 @@ public class ScoringMotorUnitTest {
     public void shouldRemoveCharacterOnList(){
 
         //  GIVEN
+
+        InternalStorageFile isf = new InternalStorageFile();
 
         //features set
         ArrayList<Feature> features = new ArrayList<Feature>();
@@ -64,7 +67,7 @@ public class ScoringMotorUnitTest {
 
         //WHEN
         int startSize = sm.get_characters().size();
-        sm.removeCharacterOnList(characterToRemove);
+        sm.removeCharacterOnList(characterToRemove.get_characterName());
 
         //THEN
         assertEquals( "10 9", startSize + " " + characters.size() );

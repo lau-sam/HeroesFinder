@@ -20,12 +20,6 @@ public class Character {
         this.set_characterScore(characterScore);
     }
 
-    public Character( String characterName){
-        _characterName = characterName;
-        _characterFeatures = new ArrayList<Feature>();
-        _characterScore = 0;
-    }
-
     public String get_characterName() {
         return _characterName;
     }
@@ -48,9 +42,5 @@ public class Character {
 
     public void set_characterScore(int _characterScore) {
         this._characterScore = _characterScore;
-    }
-
-    public void addFeature(Feature feature){
-        _characterFeatures.add(feature);
     }
 }

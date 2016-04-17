@@ -1,8 +1,5 @@
 package fr.epsi.i4.myapplication;
 
-import android.content.Context;
-import android.test.mock.MockContext;
-
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -36,7 +33,7 @@ public class ScoringMotorUnitTest {
         features.add(new Feature("bad",true));
         features.add(new Feature("transforms",true));
         //set
-        Character characterToRemove = new Character("Superman",features, 0);
+        String characterToRemove = "Superman";
 
         //Data to test
         Character superman = new Character("Superman",features, 10);
@@ -67,7 +64,7 @@ public class ScoringMotorUnitTest {
 
         //WHEN
         int startSize = sm.get_characters().size();
-        sm.removeCharacterOnList(characterToRemove.get_characterName());
+        sm.removeCharacterOnList(characterToRemove);
 
         //THEN
         assertEquals( "10 9", startSize + " " + characters.size() );
@@ -178,10 +175,10 @@ public class ScoringMotorUnitTest {
 
         //WHEN
         int startSize = sm.get_characters().size();
-        sm.removeCharactersNotInUserAnswer(new Feature("sexeMan",true));
+        sm.removeCharactersFromUserAnswer(new Feature("sexeMan",true));
 
         int middleSize = sm.get_characters().size();
-        sm.removeCharactersNotInUserAnswer(new Feature("redColor",true));
+        sm.removeCharactersFromUserAnswer(new Feature("redColor",true));
 
         //THEN
         assertEquals( "10 6 4", startSize + " " + middleSize + " " + characters.size() );

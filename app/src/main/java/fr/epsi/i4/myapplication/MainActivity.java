@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
     };
 
     // Init helpers
-    private final InternalStorageFile isf = new InternalStorageFile();;
     private ScoringMotor sm;
 
     @Override
@@ -122,10 +121,8 @@ public class MainActivity extends AppCompatActivity {
         // while interacting with the UI.
         findViewById(R.id.aboutBtn).setOnTouchListener(mDelayHideTouchListener);
 
-        // set characters with all characters on CharactersList.csv (knowledge database)
-        ArrayList<Character> characters = isf.getCharactersFromCSVFormat(this.getApplicationContext());
         // init scoring motor with characters
-        sm = new ScoringMotor(characters);
+        sm = new ScoringMotor(this.getApplicationContext());
     }
 
     @Override
@@ -184,39 +181,66 @@ public class MainActivity extends AppCompatActivity {
     public void onAnswerButtonClick(View view) {
 
         TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
+        String featureLabel = "";
+        Feature userAnswer;
 
         switch (view.getId()) {
 
             case R.id.yesBtn :
-                Log.e(TAG,"yesBtn");
-                mTextView.setText("\n\n"+"yesBtn");
+                //mTextView.setText("\n\n"+"yesBtn");
+                String text = "";
+                //show heros
                 for(Character character : sm.get_characters()){
-                    Log.e("name : ", character.get_characterName());
+                    text += character.get_characterName()+",";
                 }
+                mTextView.setTextSize(18);
+                mTextView.setText(text);
+                //EO show heros
+
                 break;
 
             case R.id.noBtn :
-                Log.e(TAG,"noBtn");
-                mTextView.setText("\n\n"+"noBtn");
+                //mTextView.setText("\n\n"+"noBtn");
 
-                // userAnser is every men
-                Feature userAnswer = new Feature("sexe_M",false);
-                //remove every men on the list
-                sm.removeCharactersNotInUserAnswer(userAnswer);
+                mTextView.setText("\n"+"garde les super heros sans pouvoir\nclick YES to view list again");
+                // if is userAnswer, still on race
+                featureLabel = "super_pouvoir";
+                userAnswer = new Feature(featureLabel,false);
+                // if is not userAnswer, remove on list
+                sm.removeCharactersFromUserAnswer(userAnswer);
 
                 break;
 
             case R.id.don_t_knowBtn :
-                Log.e(TAG,"don_t_knowBtn");
-                mTextView.setText("\n\n"+"don_t_knowBtn");
+                //mTextView.setText("\n\n"+"don_t_knowBtn");
+
+                mTextView.setText("\n"+"garde les super héros meuf\nclick YES to view list again");
+                // if is userAnswer, still on race
+                featureLabel = "sexe_M";
+                userAnswer = new Feature(featureLabel,false);
+                // if is not userAnswer, remove on list
+                sm.removeCharactersFromUserAnswer(userAnswer);
+
                 break;
 
             case R.id.probablyBtn :
-                mTextView.setText("\n\n"+"probablyBtn");
+                //mTextView.setText("\n\n"+"probablyBtn");
+
+                mTextView.setText("\n"+"garde les héros masqués\nclick YES to view list again");
+                // if is userAnswer, still on race
+                featureLabel = "masque";
+                userAnswer = new Feature(featureLabel,true);
+                // if is not userAnswer, remove on list
+                sm.removeCharactersFromUserAnswer(userAnswer);
+
                 break;
 
             case R.id.probably_notBtn :
-                mTextView.setText("\n\n"+"probably_notBtn");
+                //mTextView.setText("\n\n"+"probably_notBtn");
+
+                mTextView.setText("\n\n"+"réinitialiser la liste\nclick YES to view list again");
+                sm = new ScoringMotor(this.getApplicationContext());
+
                 break;
 
             case R.id.aboutBtn :

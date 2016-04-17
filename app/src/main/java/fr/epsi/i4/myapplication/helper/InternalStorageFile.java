@@ -26,12 +26,12 @@ import fr.epsi.i4.myapplication.model.Feature;
  * Created by tuannguyen on 14/04/16.
  */
 public class InternalStorageFile {
-    public ArrayList<Character> getCharactersFromCSVFormat(Context context){
-        ArrayList<Character> charactersList = new ArrayList<Character>();
+    public void read(Context context){
         AssetManager assetManager = context.getAssets();
         InputStream inputStream = null;
         try {
             inputStream = assetManager.open("CharactersList.csv");
+            ArrayList<Character> charactersList = new ArrayList<Character>();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
             String csvLine;
@@ -68,6 +68,5 @@ public class InternalStorageFile {
                 throw new RuntimeException("Error while closing input stream: "+e);
             }
         }
-        return charactersList;
     }
 }

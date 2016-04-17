@@ -183,6 +183,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG,"yesBtn");
                 mTextView.setText("\n\n"+"yesBtn");
                 ArrayList<Character> characters = isf.getCharactersFromCSVFormat(this.getApplicationContext());
+                /*for(Character character : characters){
+                    Log.e("name : ", character.get_characterName());
+                }*/
                 break;
 
             case R.id.noBtn :

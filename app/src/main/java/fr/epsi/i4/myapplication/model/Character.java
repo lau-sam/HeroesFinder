@@ -26,6 +26,18 @@ public class Character {
         _characterScore = 0;
     }
 
+    public Feature findFeatureById(int featureId){
+        Feature outputFeature = null;
+        boolean featureFound = false;
+        for(int i =0; i< _characterFeatures.size() && featureFound == false;i++){
+            if(_characterFeatures.get(i).get_id() == featureId){
+                outputFeature = _characterFeatures.get(i);
+                featureFound = true;
+            }
+        }
+        return outputFeature;
+    }
+
     public String get_characterName() {
         return _characterName;
     }

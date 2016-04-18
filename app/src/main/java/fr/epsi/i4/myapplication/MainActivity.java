@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     private boolean mVisible;
+
+    private Feature _currentFeature;
     private final Runnable mHideRunnable = new Runnable() {
         @Override
         public void run() {
@@ -107,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
 
-
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new OnClickListener() {
             @Override
@@ -123,6 +124,10 @@ public class MainActivity extends AppCompatActivity {
 
         // init scoring motor with characters
         sm = new ScoringMotor(this.getApplicationContext());
+
+        TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
+        _currentFeature = sm.findFeatureById(sm.nextQuestion());
+        mTextView.setText(_currentFeature.get_featureLabel());
     }
 
     @Override
@@ -187,58 +192,43 @@ public class MainActivity extends AppCompatActivity {
         switch (view.getId()) {
 
             case R.id.yesBtn :
+                _currentFeature.set_featureChoice(true);
+                sm.removeCharactersFromUserAnswer(_currentFeature);
+                _currentFeature = sm.findFeatureById(sm.nextQuestion());
+                mTextView.setText(_currentFeature.get_featureLabel());
+                break;
+
+            case R.id.noBtn :
+                _currentFeature.set_featureChoice(false);
+                sm.removeCharactersFromUserAnswer(_currentFeature);
+                _currentFeature = sm.findFeatureById(sm.nextQuestion());
+                mTextView.setText(_currentFeature.get_featureLabel());
+
+                break;
+
+            case R.id.don_t_knowBtn :
                 //mTextView.setText("\n\n"+"yesBtn");
                 String text = "";
                 //show heros
                 for(Character character : sm.get_characters()){
                     text += character.get_characterName()+",";
                 }
+                text += _currentFeature.get_featureLabel();
                 mTextView.setTextSize(18);
                 mTextView.setText(text);
                 //EO show heros
 
                 break;
 
-            case R.id.noBtn :
-                //mTextView.setText("\n\n"+"noBtn");
-
-                mTextView.setText("\n"+"garde les super heros sans pouvoir\nclick YES to view list again");
-                // if is userAnswer, still on race
-                featureLabel = "super_pouvoir";
-                userAnswer = new Feature(featureLabel,false);
-                // if is not userAnswer, remove on list
-                sm.removeCharactersFromUserAnswer(userAnswer);
-
-                break;
-
-            case R.id.don_t_knowBtn :
-                //mTextView.setText("\n\n"+"don_t_knowBtn");
-
-                mTextView.setText("\n"+"garde les super héros meuf\nclick YES to view list again");
-                // if is userAnswer, still on race
-                featureLabel = "sexe_M";
-                userAnswer = new Feature(featureLabel,false);
-                // if is not userAnswer, remove on list
-                sm.removeCharactersFromUserAnswer(userAnswer);
-
-                break;
-
             case R.id.probablyBtn :
-                //mTextView.setText("\n\n"+"probablyBtn");
 
-                mTextView.setText("\n"+"garde les héros masqués\nclick YES to view list again");
-                // if is userAnswer, still on race
-                featureLabel = "masque";
-                userAnswer = new Feature(featureLabel,true);
-                // if is not userAnswer, remove on list
-                sm.removeCharactersFromUserAnswer(userAnswer);
 
                 break;
 
             case R.id.probably_notBtn :
                 //mTextView.setText("\n\n"+"probably_notBtn");
 
-                mTextView.setText("\n\n"+"réinitialiser la liste\nclick YES to view list again");
+                mTextView.setText("\n\n"+"réinitialiser la liste\nclick Don't know to view list again");
                 sm = new ScoringMotor(this.getApplicationContext());
 
                 break;

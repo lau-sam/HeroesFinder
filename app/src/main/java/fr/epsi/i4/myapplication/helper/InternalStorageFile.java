@@ -44,10 +44,10 @@ public class InternalStorageFile {
                 for(int j = 1 ; j < answers.length; j++){
                     Feature feature;
                     if(answers[j].equals("oui")){
-                        feature = new Feature(features[j],true);
+                        feature = new Feature(features[j],true, j);
                     }
                     else{
-                        feature = new Feature(features[j],false);
+                        feature = new Feature(features[j],false, j);
                     }
                     character.addFeature(feature);
                 }
@@ -66,5 +66,34 @@ public class InternalStorageFile {
             }
         }
         return charactersList;
+    }
+
+    public ArrayList<Feature> getFeaturesList(Context context){
+        ArrayList<Feature> featuresList = new ArrayList<Feature>();
+        AssetManager assetManager = context.getAssets();
+        InputStream inputStream = null;
+        try {
+            inputStream = assetManager.open("CharactersList.csv");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            String csvLine;
+            csvLine = reader.readLine();
+            String[] features = csvLine.split(";");
+            for(int i=1; i<features.length;i++){
+                featuresList.add(new Feature(features[i],true,i));
+            }
+        }
+        catch (IOException ex) {
+            throw new RuntimeException("Error in reading CSV file: "+ex);
+        }
+        finally {
+            try {
+                inputStream.close();
+            }
+            catch (IOException e) {
+                throw new RuntimeException("Error while closing input stream: "+e);
+            }
+        }
+        return featuresList;
     }
 }

@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:gravity="top|center"
             android:keepScreenOn="true"
-            android:text="@string/question_content"
+            android:text="\n\nWelcome to\nHeroes Finder Genius"
             android:textColor="#33b5e5"
             android:textSize="30sp"
             android:textStyle="bold" />
@@ -58,7 +58,7 @@
 
         <Button
             android:id="@+id/don_t_knowBtn"
-            android:text = "@string/don_t_know"
+            android:text = "Question"
             android:gravity = "center"
             android:background = "#aa0000"
             android:layout_width = "0dp"
@@ -70,7 +70,7 @@
 
         <Button
             android:id="@+id/probablyBtn"
-            android:text = "@string/probably"
+            android:text = "Not Work !"
             android:gravity = "center"
             android:background = "#aa0000"
             android:layout_width = "0dp"
@@ -82,7 +82,7 @@
 
         <Button
             android:id="@+id/probably_notBtn"
-            android:text = "@string/probably_not"
+            android:text = "Characters List"
             android:gravity = "center"
             android:background = "#aa0000"
             android:layout_width = "0dp"
@@ -116,7 +116,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/aboutBtn"
+                android:text="Restart the game"
                 android:onClick="onAnswerButtonClick"/>
 
         </LinearLayout>

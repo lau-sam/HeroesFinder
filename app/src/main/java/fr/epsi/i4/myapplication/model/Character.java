@@ -22,7 +22,7 @@ public class Character {
 
     public Character( String characterName){
         _characterName = characterName;
-        _characterFeatures = new ArrayList<Feature>();
+        _characterFeatures = new ArrayList<>();
         _characterScore = 0;
     }
 

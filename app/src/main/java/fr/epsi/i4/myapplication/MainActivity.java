@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Init helpers
     private ScoringMotor sm;
+    private String question = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,70 +182,57 @@ public class MainActivity extends AppCompatActivity {
     public void onAnswerButtonClick(View view) {
 
         TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
-        String featureLabel = "";
+        mTextView.setTextSize(16);
         Feature userAnswer;
+        String text = "";
 
         switch (view.getId()) {
 
             case R.id.yesBtn :
-                //mTextView.setText("\n\n"+"yesBtn");
-                String text = "";
-                //show heros
-                for(Character character : sm.get_characters()){
-                    text += character.get_characterName()+",";
-                }
-                mTextView.setTextSize(18);
-                mTextView.setText(text);
-                //EO show heros
-
+                //mTextView.setText("\n\n"+"noBtn");
+                mTextView.setText("\n\n"+"Question : "+question);
+                userAnswer = new Feature(question,true);
+                // if is not userAnswer, remove on list
+                sm.removeCharactersFromUserAnswer(userAnswer);
                 break;
 
             case R.id.noBtn :
                 //mTextView.setText("\n\n"+"noBtn");
-
-                mTextView.setText("\n"+"garde les super heros sans pouvoir\nclick YES to view list again");
-                // if is userAnswer, still on race
-                featureLabel = "super_pouvoir";
-                userAnswer = new Feature(featureLabel,false);
+                mTextView.setText("\n\n"+"Question : "+question);
+                userAnswer = new Feature(question,false);
                 // if is not userAnswer, remove on list
                 sm.removeCharactersFromUserAnswer(userAnswer);
-
                 break;
 
             case R.id.don_t_knowBtn :
-                //mTextView.setText("\n\n"+"don_t_knowBtn");
-
-                mTextView.setText("\n"+"garde les super héros meuf\nclick YES to view list again");
-                // if is userAnswer, still on race
-                featureLabel = "sexe_M";
-                userAnswer = new Feature(featureLabel,false);
-                // if is not userAnswer, remove on list
-                sm.removeCharactersFromUserAnswer(userAnswer);
-
+                question = sm.nextQuestion();
+                if(question!=""){
+                    mTextView.setText("\n\n"+"Question : "+question);
+                }else {
+                    for (Character character : sm.get_characters()){
+                        text += character.get_characterName()+";";
+                    }
+                    mTextView.setText("\n\n"+"Vous avez pensé à "+text);
+                }
                 break;
 
             case R.id.probablyBtn :
-                //mTextView.setText("\n\n"+"probablyBtn");
-
-                mTextView.setText("\n"+"garde les héros masqués\nclick YES to view list again");
-                // if is userAnswer, still on race
-                featureLabel = "masque";
-                userAnswer = new Feature(featureLabel,true);
-                // if is not userAnswer, remove on list
-                sm.removeCharactersFromUserAnswer(userAnswer);
-
+                mTextView.setText("\n\n"+ "Not Work !");
                 break;
 
             case R.id.probably_notBtn :
-                //mTextView.setText("\n\n"+"probably_notBtn");
-
-                mTextView.setText("\n\n"+"réinitialiser la liste\nclick YES to view list again");
-                sm = new ScoringMotor(this.getApplicationContext());
-
+                for (Character character : sm.get_characters()){
+                    text += character.get_characterName()+";";
+                }
+                mTextView.setText("\n\n"+text);
                 break;
 
             case R.id.aboutBtn :
-                mTextView.setText("\n\n"+"aboutBtn");
+                mTextView.setText("\n\n"+"restart the game");
+                sm = new ScoringMotor(this.getApplicationContext());
+                for (Character character : sm.get_characters()){
+                    text += character.get_characterName()+";";
+                }
                 break;
 
             default: Log.e(TAG,"invalid button");

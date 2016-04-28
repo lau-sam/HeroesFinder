@@ -183,6 +183,10 @@ public class MainActivity extends AppCompatActivity {
 
         TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
         mTextView.setTextSize(16);
+        mTextView.setPadding(0,100,0,0);
+        int color = Integer.parseInt("142f3d", 16)+0xFF000000;
+        mTextView.setTextColor(color);
+        mTextView.setTextSize(25);
         Feature userAnswer;
         String text = "";
 

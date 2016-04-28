@@ -76,7 +76,7 @@ public class ScoringMotor {
     }
 
     /**
-     * only for yes or no answer
+     * only for yes_default or no answer
      * @param userAnswer
      */
     public void removeCharactersFromUserAnswer(Feature userAnswer) {
@@ -152,7 +152,7 @@ public class ScoringMotor {
             double entropieQuestion=0;
             int yes = 0, no = 0;
 
-        //save "yes/no" heroes values
+        //save "yes_default/no" heroes values
             for (Character character : _characters){
                 //if true
                 Feature feat = findFeatureByLabel(question,character.get_characterFeatures());

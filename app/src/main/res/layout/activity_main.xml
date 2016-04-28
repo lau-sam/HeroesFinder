@@ -12,7 +12,8 @@
         android:orientation = "vertical"
         android:layout_width = "fill_parent"
         android:layout_height = "fill_parent"
-        android:layout_weight = "1"    >
+        android:layout_weight = "1"
+        android:background="@drawable/mainbkg">
         <TextView
             android:id="@+id/fullscreen_content"
             android:layout_width="match_parent"
@@ -20,7 +21,8 @@
             android:gravity="top|center"
             android:keepScreenOn="true"
             android:text="\n\nWelcome to\nHeroes Finder Genius"
-            android:textColor="#33b5e5"
+            android:textColor="#142f3d"
+            android:layout_marginTop="300px"
             android:textSize="30sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -34,9 +36,8 @@
 
         <Button
             android:id="@+id/yesBtn"
-            android:text = "@string/yes"
             android:gravity = "center"
-            android:background = "#aa0000"
+            android:background = "@drawable/yes_default"
             android:layout_width = "0dp"
             android:layout_height = "match_parent"
             android:layout_weight = "1"
@@ -46,9 +47,8 @@
 
         <Button
             android:id="@+id/noBtn"
-            android:text = "No"
             android:gravity = "center"
-            android:background = "#aa0000"
+            android:background = "@drawable/no"
             android:layout_width = "0dp"
             android:layout_height = "match_parent"
             android:layout_weight = "1"
@@ -58,9 +58,8 @@
 
         <Button
             android:id="@+id/don_t_knowBtn"
-            android:text = "Question"
             android:gravity = "center"
-            android:background = "#aa0000"
+            android:background = "@drawable/question"
             android:layout_width = "0dp"
             android:layout_height = "match_parent"
             android:layout_weight = "1"
@@ -70,9 +69,8 @@
 
         <Button
             android:id="@+id/probablyBtn"
-            android:text = "Not Work !"
             android:gravity = "center"
-            android:background = "#aa0000"
+            android:background = "@drawable/notwork"
             android:layout_width = "0dp"
             android:layout_height = "match_parent"
             android:layout_weight = "1"
@@ -82,9 +80,8 @@
 
         <Button
             android:id="@+id/probably_notBtn"
-            android:text = "Characters List"
             android:gravity = "center"
-            android:background = "#aa0000"
+            android:background = "@drawable/characterlist"
             android:layout_width = "0dp"
             android:layout_height = "match_parent"
             android:layout_weight = "1"
@@ -120,6 +117,8 @@
                 android:onClick="onAnswerButtonClick"/>
 
         </LinearLayout>
+        
+
     </FrameLayout>
 
 </FrameLayout>

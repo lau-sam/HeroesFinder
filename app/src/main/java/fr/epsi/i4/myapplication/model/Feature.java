@@ -5,13 +5,13 @@ package fr.epsi.i4.myapplication.model;
  */
 public class Feature {
     private String _featureLabel;
-    private boolean _featureChoice;
+    private String _featureChoice;
 
     public Feature(){
 
     }
 
-    public Feature(String featureLabel, boolean featureChoice){
+    public Feature(String featureLabel, String featureChoice){
         this._featureLabel = featureLabel;
         this._featureChoice = featureChoice;
     }
@@ -24,11 +24,11 @@ public class Feature {
         this._featureLabel = _featureLabel;
     }
 
-    public boolean is_featureChoice() {
+    public String get_featureChoice() {
         return _featureChoice;
     }
 
-    public void set_featureChoice(boolean _featureChoice) {
+    public void set_featureChoice(String _featureChoice) {
         this._featureChoice = _featureChoice;
     }
 }

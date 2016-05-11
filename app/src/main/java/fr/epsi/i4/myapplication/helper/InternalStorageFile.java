@@ -43,11 +43,11 @@ public class InternalStorageFile {
                 Character character = new Character(answers[0]);
                 for(int j = 1 ; j < answers.length; j++){
                     Feature feature;
-                    if(answers[j].equals("oui")){
-                        feature = new Feature(features[j],true);
+                    if(answers[j].equals("oui") || answers[j].equals("non")){
+                        feature = new Feature(features[j],answers[j]);
                     }
                     else{
-                        feature = new Feature(features[j],false);
+                        feature = new Feature(features[j],"oui");
                     }
                     character.addFeature(feature);
                 }

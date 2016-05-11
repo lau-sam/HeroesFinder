@@ -88,8 +88,8 @@ public class ScoringMotor {
             while (itFeature.hasNext()) {
                 Feature currentFeature = itFeature.next();
                 if (currentFeature.get_featureLabel().equals(userAnswer.get_featureLabel())) {
-                    boolean currentChoice = currentFeature.is_featureChoice();
-                    if (currentChoice != userAnswer.is_featureChoice()) {
+                    String currentChoice = currentFeature.get_featureChoice();
+                    if ( !currentChoice.equals("") && !currentChoice.equals(userAnswer.get_featureChoice())) {
                         it.remove();
                     }
                 }
@@ -97,23 +97,28 @@ public class ScoringMotor {
         }
     }
 
-    // TODO //for DontKnow, Probably, ProbablyNot
-    public void modifyCharactersScore(String featureLabel, String userAnswer){
-        for(Character character : _characters){
-
-            if(userAnswer == "Probably"){
-                if(!findFeatureByLabel(featureLabel,character.get_characterFeatures()).equals(null)
-                        && findFeatureByLabel(featureLabel,character.get_characterFeatures()).is_featureChoice() == true){
-                    character.set_characterScore(character.get_characterScore()+1);
+    public void modifyCharactersScore(String featureLabel, String userAnswer) {
+        for (Character character : _characters) {
+            Feature feature = findFeatureByLabel(featureLabel, character.get_characterFeatures());
+            if (!feature.equals(null)) {
+                if (userAnswer == "Probably") {
+                    if (feature.get_featureChoice() == "oui") {
+                        character.set_characterScore(character.get_characterScore() + 1);
+                    } else if(feature.get_featureChoice() == "non"){
+                        character.set_characterScore(character.get_characterScore() - 1);
+                    }
+                } else if (userAnswer == "ProbablyNot") {
+                    if (feature.get_featureChoice() == "non") {
+                        character.set_characterScore(character.get_characterScore() + 1);
+                    } else if(feature.get_featureChoice() == "oui"){
+                        character.set_characterScore((character.get_characterScore() - 1));
+                    }
                 }
-            }else if(userAnswer == "ProbablyNot"){
-                if(!findFeatureByLabel(featureLabel,character.get_characterFeatures()).equals(null)
-                        && findFeatureByLabel(featureLabel,character.get_characterFeatures()).is_featureChoice() == false){
-                    character.set_characterScore(character.get_characterScore()+1);
-                }
+                if (character.get_characterScore() <= -2)
+                    _characters.remove(character);
             }
-
         }
+        _questions.remove(featureLabel);
     }
 
 /**** END OF CHARACTER *****/
@@ -156,9 +161,13 @@ public class ScoringMotor {
             for (Character character : _characters){
                 //if true
                 Feature feat = findFeatureByLabel(question,character.get_characterFeatures());
-                if( !feat.equals(null) && feat.is_featureChoice() == true){
-                    yes++;
-                }else no++;
+                if( !feat.equals(null)){
+                    if( feat.get_featureChoice().equals("oui")){
+                        yes++;
+                    }else if(feat.get_featureChoice().equals("non")){
+                        no++;
+                    }
+                }
             }
         //calculate entropie
             if(yes>no){
@@ -170,7 +179,7 @@ public class ScoringMotor {
                 bestEntropie=entropieQuestion;
                 bestQuestion = question;
             }
-            Log.e(TAG,String.valueOf(entropieQuestion));
+            //Log.e(TAG,String.valueOf(entropieQuestion));
         }
 
         return bestQuestion;

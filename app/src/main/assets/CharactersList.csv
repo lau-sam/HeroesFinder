@@ -1,4 +1,4 @@
-Personnage;sexe_M;super_pouvoir;vit_en_amerique;vit_au_japon;marvel;DC_Comics;apparence_humaine;couleur_vert;couleur_noir;couleur_rouge;arme;se_transforme;mutant;mechant;masque;peut_voler;vit_sur_terre;partie_d_un_groupe
+Personnage;Est-il de sexe masculin?;A-t-il des super pouvoirs?;Vit-il en amerique?;vit-il au Japon?;Fait-il partie de l'univers marvel?;Fait-il partie de l'univers DC Comics?;A-t-il une apparence humaine?;Est-il de couleur verte?;Est-ce qu'il est vetu en noir?;Est-il vetu en rouge?;Posede-t-il une arme?;se transforme-t-il?;Est-ce un mutant?;Est-ce un mechant?;Porte-til un masque?;Peut-il voler?;vit-il sur Terre?;Fail-il parti d'un groupe?
 mr_fantastic;oui;oui;oui;non;oui;non;oui;non;oui;non;non;non;non;non;non;non;oui;oui
 susan_storm;non;oui;oui;non;oui;non;oui;non;oui;non;non;non;non;non;non;non;oui;oui
 John_storm;oui;oui;oui;non;oui;non;oui;non;oui;non;non;oui;oui;non;non;oui;oui;oui

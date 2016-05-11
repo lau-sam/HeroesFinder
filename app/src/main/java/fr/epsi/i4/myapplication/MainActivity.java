@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
     private ScoringMotor sm;
     private String question = "";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +108,12 @@ public class MainActivity extends AppCompatActivity {
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
+
+        TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
+        mTextView.setTextSize(12);
+        mTextView.setPadding(0,150,0,0);
+        int color = Integer.parseInt("142f3d", 16)+0xFF000000;
+        mTextView.setTextColor(color);
 
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -124,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
 
         // init scoring motor with characters
         sm = new ScoringMotor(this.getApplicationContext());
+        newQuestion();
+        logCharacters();
     }
 
     @Override
@@ -179,64 +188,78 @@ public class MainActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+    public void newQuestion(){
+        question = sm.nextQuestion();
+        TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
+        if(!question.isEmpty()){
+            mTextView.setText(question);
+        }
+        else{
+            mTextView.setText(sm.get_characters().size()+" Vous avez pensé à "+ sm.get_characters().get(0).get_characterName());
+        }
+    }
+
+    public void logCharacters(){
+        String text ="";
+        for (Character character : sm.get_characters()){
+            text += character.get_characterName()+";";
+        }
+        Log.e("Characters : " , text);
+    }
+
     public void onAnswerButtonClick(View view) {
 
-        TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
-        mTextView.setTextSize(16);
-        mTextView.setPadding(0,100,0,0);
-        int color = Integer.parseInt("142f3d", 16)+0xFF000000;
-        mTextView.setTextColor(color);
-        mTextView.setTextSize(25);
         Feature userAnswer;
-        String text = "";
 
         switch (view.getId()) {
 
             case R.id.yesBtn :
-                //mTextView.setText("\n\n"+"noBtn");
-                mTextView.setText("\n\n"+"Question : "+question);
-                userAnswer = new Feature(question,true);
+                Log.e(question, "yes");
+                userAnswer = new Feature(question,"oui");
                 // if is not userAnswer, remove on list
                 sm.removeCharactersFromUserAnswer(userAnswer);
+                newQuestion();
+                logCharacters();
                 break;
 
             case R.id.noBtn :
-                //mTextView.setText("\n\n"+"noBtn");
-                mTextView.setText("\n\n"+"Question : "+question);
-                userAnswer = new Feature(question,false);
+                Log.e(question, "no");
+                userAnswer = new Feature(question,"non");
                 // if is not userAnswer, remove on list
                 sm.removeCharactersFromUserAnswer(userAnswer);
+                newQuestion();
+                logCharacters();
                 break;
 
             case R.id.don_t_knowBtn :
-                question = sm.nextQuestion();
-                if(question!=""){
-                    mTextView.setText("\n\n"+"Question : "+question);
-                }else {
-                    for (Character character : sm.get_characters()){
-                        text += character.get_characterName()+";";
-                    }
-                    mTextView.setText("\n\n"+"Vous avez pensé à "+text);
-                }
+                /*Log.e(question, "dont know");
+                sm.modifyCharactersScore(question,"DontKnow");
+                newQuestion();
+                logCharacters();
+                break;*/
+                sm = new ScoringMotor(this.getApplicationContext());
+                newQuestion();
+                logCharacters();
                 break;
 
             case R.id.probablyBtn :
-                mTextView.setText("\n\n"+ "Not Work !");
+                Log.e(question, "probably");
+                sm.modifyCharactersScore(question,"Probably");
+                newQuestion();
+                logCharacters();
                 break;
 
             case R.id.probably_notBtn :
-                for (Character character : sm.get_characters()){
-                    text += character.get_characterName()+";";
-                }
-                mTextView.setText("\n\n"+text);
+                Log.e(question, "probably not");
+                sm.modifyCharactersScore(question,"ProbablyNot");
+                newQuestion();
+                logCharacters();
                 break;
 
             case R.id.aboutBtn :
-                mTextView.setText("\n\n"+"restart the game");
                 sm = new ScoringMotor(this.getApplicationContext());
-                for (Character character : sm.get_characters()){
-                    text += character.get_characterName()+";";
-                }
+                newQuestion();
+                logCharacters();
                 break;
 
             default: Log.e(TAG,"invalid button");

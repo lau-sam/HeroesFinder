@@ -1,13 +1,16 @@
 package fr.epsi.i4.myapplication.helper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.epsi.i4.myapplication.R;
 import fr.epsi.i4.myapplication.model.Character;
 import fr.epsi.i4.myapplication.model.Feature;
 
@@ -19,8 +22,12 @@ public class ScoringMotor {
 
     private static final String TAG = "ScoringMotor";
     private ArrayList<Character> _characters;
-    private final InternalStorageFile isf = new InternalStorageFile();
+    private ArrayList<Character> _charactersCopy;
+    private  InternalStorageFile isf;
     private ArrayList<String> _questions;
+    private ArrayList<Feature> _answerFeatures;
+    private boolean _isCharacterMatch;
+    private boolean _newCharacterSet;
 
 
 /**** CONSTRUCTOR + INIT *****/
@@ -28,12 +35,18 @@ public class ScoringMotor {
     public ScoringMotor(){}
 
     public ScoringMotor(Context context){
-        _characters = isf.getCharactersFromCSVFormat(context);
+        isf = new InternalStorageFile(context);
+        _charactersCopy = isf.getCharactersFromCSVFormat(context);
         initQuestions();
 
     }
 
-    private void initQuestions(){
+    public void initQuestions(){
+        _characters = (ArrayList<Character>)_charactersCopy.clone();
+        _answerFeatures = new ArrayList<Feature>();
+        _isCharacterMatch = true;
+        _newCharacterSet = false;
+
         _questions = new ArrayList<>();
         ArrayList<Feature> features =  _characters.get(1).get_characterFeatures();
         for(Feature feature : features){
@@ -89,7 +102,7 @@ public class ScoringMotor {
                 Feature currentFeature = itFeature.next();
                 if (currentFeature.get_featureLabel().equals(userAnswer.get_featureLabel())) {
                     String currentChoice = currentFeature.get_featureChoice();
-                    if ( !currentChoice.equals("") && !currentChoice.equals(userAnswer.get_featureChoice())) {
+                    if ( !currentChoice.isEmpty() && !currentChoice.equals(userAnswer.get_featureChoice())) {
                         it.remove();
                     }
                 }
@@ -97,20 +110,37 @@ public class ScoringMotor {
         }
     }
 
-    public void modifyCharactersScore(String featureLabel, String userAnswer) {
+    public void setUserAnswer(Feature feature){
+        _answerFeatures.add(feature);
+        if(feature.get_featureChoice().equals("oui")|| feature.get_featureChoice().equals("non")){
+            removeCharactersFromUserAnswer(feature);
+        }
+        else{
+            modifyCharactersScore(feature);
+        }
+        _questions.remove(feature.get_featureLabel());
+    }
+
+    public void removeQuestion(Feature feature){
+        _questions.remove(feature.get_featureLabel());
+    }
+
+    public void modifyCharactersScore(Feature featureAnswer) {
+        String featureLabel = featureAnswer.get_featureLabel();
+        String userAnswer = featureAnswer.get_featureChoice();
         for (Character character : _characters) {
             Feature feature = findFeatureByLabel(featureLabel, character.get_characterFeatures());
             if (!feature.equals(null)) {
-                if (userAnswer == "Probably") {
-                    if (feature.get_featureChoice() == "oui") {
+                if (userAnswer.equals(R.string.probably)) {
+                    if (feature.get_featureChoice().equals("oui")) {
                         character.set_characterScore(character.get_characterScore() + 1);
-                    } else if(feature.get_featureChoice() == "non"){
+                    } else if(feature.get_featureChoice().equals("non")){
                         character.set_characterScore(character.get_characterScore() - 1);
                     }
-                } else if (userAnswer == "ProbablyNot") {
-                    if (feature.get_featureChoice() == "non") {
+                } else if (userAnswer.equals(R.string.probably_not)) {
+                    if (feature.get_featureChoice().equals("non")) {
                         character.set_characterScore(character.get_characterScore() + 1);
-                    } else if(feature.get_featureChoice() == "oui"){
+                    } else if(feature.get_featureChoice().equals("oui")){
                         character.set_characterScore((character.get_characterScore() - 1));
                     }
                 }
@@ -118,7 +148,6 @@ public class ScoringMotor {
                     _characters.remove(character);
             }
         }
-        _questions.remove(featureLabel);
     }
 
 /**** END OF CHARACTER *****/
@@ -144,45 +173,85 @@ public class ScoringMotor {
         return outputFeature;
     }
 
+    public String proposeCharacter(){
+        if(_characters.size() != 0){
+            return _characters.get(0).get_characterName();
+        }
+        return "";
+    }
+
+    public ArrayList<Feature> getListUserAnswers(){
+        return _answerFeatures;
+    }
+
     /**
      * remove the best question in questions still on race : this
      * @return the best question to answer next
      */
     public String nextQuestion(){
-        String bestQuestion = "";
-        double bestEntropie = 0;
+        if(_isCharacterMatch){
+            String bestQuestion = "";
+            double bestEntropie = 0;
 
-    //foreach question
-        for(String question : _questions){
-            double entropieQuestion=0;
-            int yes = 0, no = 0;
+            //foreach question
+            for(String question : _questions){
+                double entropieQuestion=0;
+                int yes = 0, no = 0;
 
-        //save "yes_default/no" heroes values
-            for (Character character : _characters){
-                //if true
-                Feature feat = findFeatureByLabel(question,character.get_characterFeatures());
-                if( !feat.equals(null)){
-                    if( feat.get_featureChoice().equals("oui")){
-                        yes++;
-                    }else if(feat.get_featureChoice().equals("non")){
-                        no++;
+                //save "yes_default/no" heroes values
+                for (Character character : _characters){
+                    //if true
+                    Feature feat = findFeatureByLabel(question,character.get_characterFeatures());
+                    if( feat != null){
+                        if( feat.get_featureChoice().equals("oui")){
+                            yes++;
+                        }else if(feat.get_featureChoice().equals("non")){
+                            no++;
+                        }
                     }
                 }
-            }
-        //calculate entropie
-            if(yes>no){
-                entropieQuestion = Double.valueOf(no)/Double.valueOf(yes);
-            }else entropieQuestion = Double.valueOf(yes)/Double.valueOf(no);
+                //calculate entropie
+                if(yes>no){
+                    entropieQuestion = Double.valueOf(no)/Double.valueOf(yes);
+                }else
+                    entropieQuestion = Double.valueOf(yes)/Double.valueOf(no);
 
-        //save best question
-            if(bestEntropie<entropieQuestion){
-                bestEntropie=entropieQuestion;
-                bestQuestion = question;
+                //save best question
+                if(entropieQuestion > bestEntropie){
+                    bestEntropie=entropieQuestion;
+                    bestQuestion = question;
+                }
             }
-            //Log.e(TAG,String.valueOf(entropieQuestion));
+
+            return bestQuestion;
         }
+        else{
+            if(_questions.size() != 0)
+                return _questions.get(0);
+            else
+                return "";
+        }
+    }
 
-        return bestQuestion;
+    // on pose des qustions jusqu'à trouver une reponse qui diffère du personnage restant
+    public void tryDifferenciateFromLastCharacter(Feature userAnswer){
+        _answerFeatures.add(userAnswer);
+        String answer = userAnswer.get_featureChoice();
+        if(answer.equals("oui") || answer.equals("non")){
+            Iterator<Feature> itFeature = _characters.get(0).get_characterFeatures().iterator();
+            while (itFeature.hasNext()) {
+                    Feature currentFeature = itFeature.next();
+                if (currentFeature.get_featureLabel().equals(userAnswer.get_featureLabel())) {
+                    if (!currentFeature.get_featureChoice().equals(userAnswer.get_featureChoice())){
+                        _newCharacterSet = true;
+                    }
+                    else{
+                        _questions.remove(userAnswer.get_featureLabel());
+                    }
+
+                }
+            }
+        }
     }
 
 
@@ -201,8 +270,27 @@ public class ScoringMotor {
         this._characters = _characters;
     }
 
+    public void set_isCharacterMatch(boolean isCharacterMatch) {
+        _isCharacterMatch = isCharacterMatch;
+    }
 
-/**** END OF GETTERs, SETTERs *****/
+    public ArrayList<Character> get_charactersCopy() {
+        return _charactersCopy;
+    }
+
+    public void addNewCharacter(Character character){
+        _charactersCopy.add(character);
+    }
+
+    public boolean is_isCharacterMatch() {
+        return _isCharacterMatch;
+    }
+
+    public boolean is_newCharacterSet() {
+        return _newCharacterSet;
+    }
+
+    /**** END OF GETTERs, SETTERs *****/
 
 
 }

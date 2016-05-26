@@ -1,17 +1,25 @@
 package fr.epsi.i4.myapplication;
 
 import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Layout;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import fr.epsi.i4.myapplication.helper.InternalStorageFile;
 import fr.epsi.i4.myapplication.helper.ScoringMotor;
@@ -97,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
     // Init helpers
     private ScoringMotor sm;
     private String question = "";
+    HashMap<String, Integer> images;
 
 
     @Override
@@ -106,33 +115,43 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mVisible = true;
-        mControlsView = findViewById(R.id.fullscreen_content_controls);
+
         mContentView = findViewById(R.id.fullscreen_content);
 
         TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
-        mTextView.setTextSize(12);
+        mTextView.setTextSize(15);
         mTextView.setPadding(0,150,0,0);
         int color = Integer.parseInt("142f3d", 16)+0xFF000000;
         mTextView.setTextColor(color);
 
 
-        // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggle();
-            }
-        });
-
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        findViewById(R.id.aboutBtn).setOnTouchListener(mDelayHideTouchListener);
-
         // init scoring motor with characters
         sm = new ScoringMotor(this.getApplicationContext());
         newQuestion();
-        logCharacters();
+        //logCharacters();
+        Log.e("Début de partie", "______________________________________________");
+
+        images = new HashMap<String, Integer>();
+        for(Character character : sm.get_characters()){
+            String nomPerso = bienNommer(character.get_characterName());
+            images.put( nomPerso, getResId(nomPerso, R.drawable.class));
+        }
+        String yolo = "";
+    }
+
+    private String bienNommer(String input){
+        return input.replaceAll(" ","").toLowerCase();
+    }
+
+    public static int getResId(String resName, Class<?> c) {
+
+        try {
+            Field idField = c.getDeclaredField(resName);
+            return idField.getInt(idField);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     @Override
@@ -143,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
         // created, to briefly hint to the user that UI controls
         // are available.
         delayedHide(100);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     private void toggle() {
@@ -159,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-        mControlsView.setVisibility(View.GONE);
+
         mVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay
@@ -189,14 +209,58 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newQuestion(){
-        question = sm.nextQuestion();
-        TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
-        if(!question.isEmpty()){
-            mTextView.setText(question);
+        if(!sm.is_newCharacterSet()){
+            question = sm.nextQuestion();
+            TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
+            if(!question.isEmpty()){
+                mTextView.setText(question);
+            }
+            else{
+                setCharacterProposal(sm.proposeCharacter());
+                String characterName = sm.get_characters().get(0).get_characterName();
+                mTextView.setText(sm.get_characters().size()+" Vous avez pensé à "+ characterName);
+                changeLayout(R.id.layout_proposal);
+                ImageView imageView = (ImageView) findViewById(R.id.imageViewResult);
+                imageView.setImageResource(0);
+
+
+                //convert reponse in good format for my ViewResult without Uppercase
+                String reponse = bienNommer(characterName);
+                try{
+                    imageView.setImageResource(images.get(reponse).intValue());
+                }
+                catch(Exception e){}
+            }
         }
         else{
-            mTextView.setText(sm.get_characters().size()+" Vous avez pensé à "+ sm.get_characters().get(0).get_characterName());
+
         }
+
+    }
+
+    private void changeLayout(int idLayouDisplayed){
+        LinearLayout layout = (LinearLayout) findViewById(R.id.layout_answers);
+        layout.setVisibility(View.GONE);
+        LinearLayout layout2 = (LinearLayout) findViewById(R.id.layout_proposal);
+        layout2.setVisibility(View.GONE);
+        layout = (LinearLayout) findViewById(R.id.layout_final);
+        layout.setVisibility(View.GONE);
+        layout = (LinearLayout) findViewById(R.id.layout_newCharacterEntry);
+        layout.setVisibility(View.GONE);
+
+
+        LinearLayout layoutToDisplay = (LinearLayout) findViewById(idLayouDisplayed);
+        layoutToDisplay.setVisibility(View.VISIBLE);
+    }
+
+    private void setCharacterProposal(String character) {
+
+    }
+
+    private void displayStats(){
+        changeLayout(R.id.layout_final);
+        TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
+        mTextView.setText("Trouvé en " + sm.getListUserAnswers().size() + " questions !");
     }
 
     public void logCharacters(){
@@ -207,63 +271,177 @@ public class MainActivity extends AppCompatActivity {
         Log.e("Characters : " , text);
     }
 
+    public void saisirNouveauPersonnage(){
+        changeLayout(R.id.layout_newCharacterEntry);
+        TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
+        mTextView.setText("Tu m'as posé une colle ! Entre le nom du nouveau personnage :");
+    }
+
     public void onAnswerButtonClick(View view) {
 
         Feature userAnswer;
 
-        switch (view.getId()) {
+        if(sm.is_isCharacterMatch()){
+            switch (view.getId()) {
 
-            case R.id.yesBtn :
-                Log.e(question, "yes");
-                userAnswer = new Feature(question,"oui");
-                // if is not userAnswer, remove on list
-                sm.removeCharactersFromUserAnswer(userAnswer);
-                newQuestion();
-                logCharacters();
-                break;
+                case R.id.yesBtn :
+                    Log.e(question, "oui");
+                    userAnswer = new Feature(question,"oui");
 
-            case R.id.noBtn :
-                Log.e(question, "no");
-                userAnswer = new Feature(question,"non");
-                // if is not userAnswer, remove on list
-                sm.removeCharactersFromUserAnswer(userAnswer);
-                newQuestion();
-                logCharacters();
-                break;
+                    sm.setUserAnswer(userAnswer);
+                    newQuestion();
+                    //logCharacters();
+                    break;
 
-            case R.id.don_t_knowBtn :
-                /*Log.e(question, "dont know");
-                sm.modifyCharactersScore(question,"DontKnow");
-                newQuestion();
-                logCharacters();
-                break;*/
-                sm = new ScoringMotor(this.getApplicationContext());
-                newQuestion();
-                logCharacters();
-                break;
+                case R.id.noBtn :
+                    Log.e(question, "non");
+                    userAnswer = new Feature(question,"non");
+                    sm.setUserAnswer(userAnswer);
+                    newQuestion();
+                    //logCharacters();
+                    break;
 
-            case R.id.probablyBtn :
-                Log.e(question, "probably");
-                sm.modifyCharactersScore(question,"Probably");
-                newQuestion();
-                logCharacters();
-                break;
+                case R.id.don_t_knowBtn :
+                    Log.e(question, "je ne sais pas");
+                    userAnswer = new Feature(question,"dont know");
+                    sm.removeQuestion(userAnswer);
+                    newQuestion();
+                    //logCharacters();
+                    break;
 
-            case R.id.probably_notBtn :
-                Log.e(question, "probably not");
-                sm.modifyCharactersScore(question,"ProbablyNot");
-                newQuestion();
-                logCharacters();
-                break;
+                case R.id.probablyBtn :
+                    Log.e(question, "probablement");
+                    userAnswer = new Feature(question,"Probably");
+                    sm.setUserAnswer(userAnswer);
+                    newQuestion();
+                    //logCharacters();
+                    break;
 
-            case R.id.aboutBtn :
-                sm = new ScoringMotor(this.getApplicationContext());
-                newQuestion();
-                logCharacters();
-                break;
+                case R.id.probably_notBtn :
+                    Log.e(question, "probably pas");
+                    userAnswer = new Feature(question,"ProbablyNot");
+                    sm.setUserAnswer(userAnswer);
+                    newQuestion();
+                    //logCharacters();
+                    break;
 
-            default: Log.e(TAG,"invalid button");
-                break;
+                case R.id.yesProposalBtn :
+                    displayStats();
+
+                    break;
+                case R.id.noProposalBtn :
+                    changeLayout(R.id.layout_answers);
+                    sm.set_isCharacterMatch(false);
+                    newQuestion();
+                    break;
+                case R.id.resetBtn :
+                    changeLayout(R.id.layout_answers);
+                    sm.initQuestions();
+                    newQuestion();
+                    break;
+                case R.id.resetBtnFinal :
+                    EditText editText = (EditText) findViewById(R.id.characterName);
+                    String characterName = editText.getText().toString();
+
+                    changeLayout(R.id.layout_answers);
+                    Character newCharacter = new Character(characterName);
+
+                    InternalStorageFile isf = new InternalStorageFile(getApplicationContext());
+                    newCharacter.set_characterFeatures(isf.getFeatureLabels(), sm.getListUserAnswers());
+                    sm.addNewCharacter(newCharacter);
+                    sm.initQuestions();
+                    newQuestion();
+                    break;
+                default: Log.e(TAG,"invalid button");
+                    break;
+            }
+        }
+
+        else{
+            switch (view.getId()) {
+
+                case R.id.yesBtn :
+                    Log.e(question, "oui");
+                    userAnswer = new Feature(question,"oui");
+
+                    sm.tryDifferenciateFromLastCharacter(userAnswer);
+                    if(!sm.is_newCharacterSet())
+                        newQuestion();
+                    else
+                        saisirNouveauPersonnage();
+
+                    //logCharacters();
+                    break;
+
+                case R.id.noBtn :
+                    Log.e(question, "non");
+                    userAnswer = new Feature(question,"non");
+
+                    sm.tryDifferenciateFromLastCharacter(userAnswer);
+                    if(!sm.is_newCharacterSet())
+                        newQuestion();
+                    else
+                        saisirNouveauPersonnage();
+
+
+                    //logCharacters();
+                    break;
+
+                case R.id.don_t_knowBtn :
+                    Log.e(question, "je ne sais pas");
+                    userAnswer = new Feature(question,"dont know");
+                    sm.removeQuestion(userAnswer);
+                    newQuestion();
+                    //logCharacters();
+                    break;
+
+
+                case R.id.probablyBtn :
+                    Log.e(question, "probablement");
+                    userAnswer = new Feature(question,"Probably");
+                    sm.removeQuestion(userAnswer);
+                    newQuestion();
+                    //logCharacters();
+                    break;
+
+                case R.id.probably_notBtn :
+                    Log.e(question, "probablement pas");
+                    userAnswer = new Feature(question,"ProbablyNot");
+                    sm.removeQuestion(userAnswer);
+                    newQuestion();
+                    //logCharacters();
+                    break;
+
+                case R.id.yesProposalBtn :
+                    displayStats();
+
+                    break;
+                case R.id.noProposalBtn :
+                    changeLayout(R.id.layout_answers);
+                    sm.set_isCharacterMatch(false);
+                    newQuestion();
+                    break;
+                case R.id.resetBtn :
+                    changeLayout(R.id.layout_answers);
+                    sm.initQuestions();
+                    newQuestion();
+                    break;
+                case R.id.resetBtnFinal :
+                    EditText editText = (EditText) findViewById(R.id.characterName);
+                    String characterName = editText.getText().toString();
+
+                    changeLayout(R.id.layout_answers);
+                    Character newCharacter = new Character(characterName);
+
+                    InternalStorageFile isf = new InternalStorageFile(getApplicationContext());
+                    newCharacter.set_characterFeatures(isf.getFeatureLabels(), sm.getListUserAnswers());
+                    sm.addNewCharacter(newCharacter);
+                    sm.initQuestions();
+                    newQuestion();
+                    break;
+                default: Log.e(TAG,"invalid button");
+                    break;
+            }
         }
     }
 }

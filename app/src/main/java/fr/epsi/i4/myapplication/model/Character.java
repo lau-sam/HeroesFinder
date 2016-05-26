@@ -42,6 +42,30 @@ public class Character {
         this._characterFeatures = _characterFeatures;
     }
 
+    public void set_characterFeatures(ArrayList<String> featureStrings, ArrayList<Feature> answerFeatures){
+        ArrayList<Feature> characterFeatures = new ArrayList<Feature>();
+        for(String featureString : featureStrings){
+            Feature currentFeature = null;
+            boolean featureFound = false;
+            for(Feature feature : answerFeatures){
+                if(featureString.equals(feature.get_featureLabel())){
+                    if(feature.get_featureChoice().equals("oui") || feature.get_featureChoice().equals("non")){
+                        currentFeature = feature;
+                        featureFound = true;
+                    }
+                    break;
+                }
+            }
+            if(!featureFound){
+                characterFeatures.add(new Feature(featureString, ""));
+            }
+            else{
+                characterFeatures.add(currentFeature);
+            }
+        }
+        _characterFeatures = (ArrayList<Feature>) characterFeatures.clone();
+    }
+
     public int get_characterScore() {
         return _characterScore;
     }

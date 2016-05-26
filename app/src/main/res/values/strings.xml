@@ -7,4 +7,5 @@
     <string name="don_t_know">Don\'t Know</string>
     <string name="yes">Yes</string>
     <string name="title_activity_list">ListActivity</string>
+    <string name="no">No</string>
 </resources>

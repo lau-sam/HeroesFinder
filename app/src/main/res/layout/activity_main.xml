@@ -11,67 +11,73 @@
 
     <LinearLayout
         android:layout_gravity = "center"
-        android:orientation = "horizontal"
+        android:orientation = "vertical"
         android:layout_width = "wrap_content"
         android:layout_height = "wrap_content"
         android:layout_weight = "1"
         android:id="@+id/layout_answers"
         android:layout_alignParentBottom="false"
-        android:layout_centerVertical="true">
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
 
         <Button
             android:id="@+id/yesBtn"
             android:gravity = "center"
             android:background = "@drawable/froui"
-            android:layout_width = "0dp"
-            android:layout_height = "match_parent"
+            android:layout_width = "200dp"
+            android:layout_height = "40dp"
             android:layout_weight = "1"
             android:layout_marginLeft = "5sp"
             android:layout_marginRight = "5sp"
+            android:layout_marginTop="150dp"
             android:onClick="onAnswerButtonClick"/>
 
         <Button
             android:id="@+id/noBtn"
             android:gravity = "center"
             android:background = "@drawable/frnon"
-            android:layout_width = "0dp"
-            android:layout_height = "match_parent"
+            android:layout_width = "200dp"
+            android:layout_height = "40dp"
             android:layout_weight = "1"
             android:layout_marginLeft = "5sp"
             android:layout_marginRight = "5sp"
+            android:layout_marginTop="7dp"
             android:onClick="onAnswerButtonClick"/>
 
         <Button
             android:id="@+id/don_t_knowBtn"
             android:gravity = "center"
             android:background="@drawable/frjenesaispas"
-            android:layout_width = "0dp"
-            android:layout_height = "match_parent"
+            android:layout_width = "200dp"
+            android:layout_height = "40dp"
             android:layout_weight = "1"
             android:layout_marginLeft = "5sp"
             android:layout_marginRight = "5sp"
+            android:layout_marginTop="7dp"
             android:onClick="onAnswerButtonClick"/>
 
         <Button
             android:id="@+id/probablyBtn"
             android:gravity = "center"
             android:background = "@drawable/frprob"
-            android:layout_width = "0dp"
-            android:layout_height = "match_parent"
+            android:layout_width = "200dp"
+            android:layout_height = "40dp"
             android:layout_weight = "1"
             android:layout_marginLeft = "5sp"
             android:layout_marginRight = "5sp"
+            android:layout_marginTop="7dp"
             android:onClick="onAnswerButtonClick"/>
 
         <Button
             android:id="@+id/probably_notBtn"
             android:gravity = "center"
             android:background = "@drawable/frprobnot"
-            android:layout_width = "0dp"
-            android:layout_height = "match_parent"
+            android:layout_width = "200dp"
+            android:layout_height = "40dp"
             android:layout_weight = "1"
             android:layout_marginLeft = "5sp"
             android:layout_marginRight = "5sp"
+            android:layout_marginTop="7dp"
             android:onClick="onAnswerButtonClick"/>
     </LinearLayout>
 
@@ -82,17 +88,19 @@
         android:layout_weight = "1"
         android:id="@+id/layout_proposal"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="160dp"
-        android:visibility="gone">
+        android:layout_marginBottom="80dp"
+        android:visibility="gone"
+        android:orientation="vertical">
 
     <ImageView
         android:id="@+id/imageViewResult"
-        android:layout_width="480px"
-        android:layout_height="356px" />
+        android:layout_width="200dp"
+        android:layout_height="160dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/imageViewResult" >
 
     <Button
         android:id="@+id/yesProposalBtn"
@@ -158,11 +166,12 @@
 
         <EditText
             android:id="@+id/characterName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="47dp"
             android:inputType="textPersonName"
             android:text=""
-            android:ems="10"/>
+            android:ems="10"
+            android:background="#d2cece" />
 
         <Button
             android:id="@+id/resetBtnFinal"
@@ -256,11 +265,12 @@
 
         <EditText
             android:id="@+id/proposerLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="140dp"
+            android:layout_height="47dp"
             android:inputType="textPersonName"
             android:text=""
-            android:ems="10"/>
+            android:ems="10"
+            android:background="#d2cece"/>
 
         <Button
             android:id="@+id/proposerOkBtn"

@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
         mTextView.setTextSize(15);
-        mTextView.setPadding(0,150,0,0);
+        mTextView.setPadding(0,50,0,0);
         int color = Integer.parseInt("142f3d", 16)+0xFF000000;
         mTextView.setTextColor(color);
 

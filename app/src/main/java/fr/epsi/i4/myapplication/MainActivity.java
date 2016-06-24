@@ -136,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
             String nomPerso = bienNommer(character.get_characterName());
             images.put( nomPerso, getResId(nomPerso, R.drawable.class));
         }
-        String yolo = "";
     }
 
     private String bienNommer(String input){
@@ -214,53 +213,56 @@ public class MainActivity extends AppCompatActivity {
             TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
             if(!question.isEmpty()){
                 mTextView.setText(question);
+                sm.setNbQuestionsPosees(sm.getNbQuestionsPosees()+1);
             }
             else{
-                setCharacterProposal(sm.proposeCharacter());
-                String characterName = sm.get_characters().get(0).get_characterName();
-                mTextView.setText(sm.get_characters().size()+" Vous avez pensé à "+ characterName);
-                changeLayout(R.id.layout_proposal);
-                ImageView imageView = (ImageView) findViewById(R.id.imageViewResult);
-                imageView.setImageResource(0);
-
-
-                //convert reponse in good format for my ViewResult without Uppercase
-                String reponse = bienNommer(characterName);
-                try{
-                    imageView.setImageResource(images.get(reponse).intValue());
-                }
-                catch(Exception e){}
+                setCharacterProposal();
             }
         }
-        else{
-
-        }
-
     }
 
     private void changeLayout(int idLayouDisplayed){
         LinearLayout layout = (LinearLayout) findViewById(R.id.layout_answers);
         layout.setVisibility(View.GONE);
-        LinearLayout layout2 = (LinearLayout) findViewById(R.id.layout_proposal);
-        layout2.setVisibility(View.GONE);
+        layout = (LinearLayout) findViewById(R.id.layout_proposal);
+        layout.setVisibility(View.GONE);
         layout = (LinearLayout) findViewById(R.id.layout_final);
         layout.setVisibility(View.GONE);
         layout = (LinearLayout) findViewById(R.id.layout_newCharacterEntry);
         layout.setVisibility(View.GONE);
-
+        layout = (LinearLayout) findViewById(R.id.layout_continuer);
+        layout.setVisibility(View.GONE);
+        layout = (LinearLayout) findViewById(R.id.layout_choixProposerQuestion);
+        layout.setVisibility(View.GONE);
+        layout = (LinearLayout) findViewById(R.id.layout_proposerQuestion);
+        layout.setVisibility(View.GONE);
 
         LinearLayout layoutToDisplay = (LinearLayout) findViewById(idLayouDisplayed);
         layoutToDisplay.setVisibility(View.VISIBLE);
     }
 
-    private void setCharacterProposal(String character) {
+    private void setCharacterProposal() {
+        TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
 
+        String characterName = sm.proposeCharacter();
+        mTextView.setText(" Vous avez pensé à "+ characterName);
+        changeLayout(R.id.layout_proposal);
+        ImageView imageView = (ImageView) findViewById(R.id.imageViewResult);
+        imageView.setImageResource(0);
+
+
+        //convert reponse in good format for my ViewResult without Uppercase
+        String reponse = bienNommer(characterName);
+        try{
+            imageView.setImageResource(images.get(reponse).intValue());
+        }
+        catch(Exception e){}
     }
 
     private void displayStats(){
         changeLayout(R.id.layout_final);
         TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
-        mTextView.setText("Trouvé en " + sm.getListUserAnswers().size() + " questions !");
+        mTextView.setText("Trouvé en " + sm.getNbQuestionsPosees() + " questions !");
     }
 
     public void logCharacters(){
@@ -318,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.probably_notBtn :
-                    Log.e(question, "probably pas");
+                    Log.e(question, "probablement pas");
                     userAnswer = new Feature(question,"ProbablyNot");
                     sm.setUserAnswer(userAnswer);
                     newQuestion();
@@ -330,9 +332,24 @@ public class MainActivity extends AppCompatActivity {
 
                     break;
                 case R.id.noProposalBtn :
-                    changeLayout(R.id.layout_answers);
+                    //changeLayout(R.id.layout_answers);
                     sm.set_isCharacterMatch(false);
-                    newQuestion();
+                    //changeLayout(R.id.layout_continuer);
+                    TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
+                    mTextView.setText("Choisissez une option :");
+
+
+                    if(sm.get_characters().size() > 1){
+                        sm.get_characters().remove(1);
+                        setCharacterProposal();
+                    }
+                    else{
+                        changeLayout(R.id.layout_continuer);
+                        sm.set_isCharacterMatch(false);
+                        //newQuestion();
+                    }
+
+                    //newQuestion();
                     break;
                 case R.id.resetBtn :
                     changeLayout(R.id.layout_answers);
@@ -357,6 +374,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        // on a éliminé tous les personnages et on essaie de distinguer le dernier perso proposé par des réponses qui diffèrent
         else{
             switch (view.getId()) {
 
@@ -417,9 +435,15 @@ public class MainActivity extends AppCompatActivity {
 
                     break;
                 case R.id.noProposalBtn :
-                    changeLayout(R.id.layout_answers);
-                    sm.set_isCharacterMatch(false);
-                    newQuestion();
+                    if(sm.get_characters().size() > 1){
+                        sm.get_characters().remove(1);
+                        setCharacterProposal();
+                    }
+                    else{
+                        changeLayout(R.id.layout_answers);
+                        sm.set_isCharacterMatch(false);
+                        newQuestion();
+                    }
                     break;
                 case R.id.resetBtn :
                     changeLayout(R.id.layout_answers);
@@ -428,20 +452,74 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.resetBtnFinal :
                     EditText editText = (EditText) findViewById(R.id.characterName);
-                    String characterName = editText.getText().toString();
+                    //String characterName = editText.getText().toString();
+                    sm.set_newCharacterName(editText.getText().toString());
+                    changeLayout(R.id.layout_choixProposerQuestion);
 
+                    TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
+                    mTextView.setText("Choisissez une option :");
+                    /*Character newCharacter = new Character(characterName);
+
+                    InternalStorageFile isf = new InternalStorageFile(getApplicationContext());
+                    newCharacter.set_characterFeatures(isf.getFeatureLabels(), sm.getListUserAnswers());
+                    sm.addNewCharacter(newCharacter);*/
+                    //sm.initQuestions();
+                    //newQuestion();
+                    break;
+                case R.id.continuerBtn :
                     changeLayout(R.id.layout_answers);
-                    Character newCharacter = new Character(characterName);
+                    newQuestion();
+                    break;
+                case R.id.arreterBtn :
+                    saisirNouveauPersonnage();
+                    break;
+                case R.id.proposerBtn :
+                    changeLayout(R.id.layout_proposerQuestion);
+                    TextView mTextVieww = (TextView) findViewById(R.id.fullscreen_content);
+                    mTextVieww.setText("Entrez une question déterminante (réponse = oui) :");
+                    break;
+                case R.id.recommencerBtn :
+                    Character newCharacter = new Character(sm.get_newCharacterName());
 
                     InternalStorageFile isf = new InternalStorageFile(getApplicationContext());
                     newCharacter.set_characterFeatures(isf.getFeatureLabels(), sm.getListUserAnswers());
                     sm.addNewCharacter(newCharacter);
+
+                    changeLayout(R.id.layout_answers);
                     sm.initQuestions();
                     newQuestion();
                     break;
+                case R.id.proposerOkBtn :
+                    proposerQuestion();
+
+                    Character newCharacter2 = new Character(sm.get_newCharacterName());
+
+                    InternalStorageFile isf2 = new InternalStorageFile(getApplicationContext());
+                    newCharacter2.set_characterFeatures(isf2.getFeatureLabels(), sm.getListUserAnswers());
+
+                    sm.addNewCharacter(newCharacter2);
+
+                    changeLayout(R.id.layout_answers);
+                    sm.initQuestions();
+                    newQuestion();
+                    break;
+                case R.id.proposerAutreBtn :
+                    proposerQuestion();
+                    break;
+
                 default: Log.e(TAG,"invalid button");
                     break;
             }
         }
+    }
+
+    private void proposerQuestion(){
+        TextView mTextView = (TextView) findViewById(R.id.fullscreen_content);
+        mTextView.setText("Entrez une question déterminante (réponse = oui) :");
+        EditText editTextNewQuestion = (EditText) findViewById(R.id.proposerLabel);
+        String newQuestion = editTextNewQuestion.getText().toString();
+        sm.setUserAnswer(new Feature(newQuestion,"oui"));
+        sm.addNewQuestion(newQuestion);
+        editTextNewQuestion.setText("");
     }
 }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import fr.epsi.i4.myapplication.R;
 import fr.epsi.i4.myapplication.model.Character;
@@ -25,9 +26,12 @@ public class ScoringMotor {
     private ArrayList<Character> _charactersCopy;
     private  InternalStorageFile isf;
     private ArrayList<String> _questions;
+    private ArrayList<String> _questionsCopy;
     private ArrayList<Feature> _answerFeatures;
     private boolean _isCharacterMatch;
     private boolean _newCharacterSet;
+    private String _newCharacterName;
+    private int nbQuestionsPosees;
 
 
 /**** CONSTRUCTOR + INIT *****/
@@ -37,6 +41,12 @@ public class ScoringMotor {
     public ScoringMotor(Context context){
         isf = new InternalStorageFile(context);
         _charactersCopy = isf.getCharactersFromCSVFormat(context);
+
+        _questionsCopy = new ArrayList<>();
+        ArrayList<Feature> features =  _charactersCopy.get(1).get_characterFeatures();
+        for(Feature feature : features){
+            _questionsCopy.add(feature.get_featureLabel());
+        }
         initQuestions();
 
     }
@@ -46,12 +56,9 @@ public class ScoringMotor {
         _answerFeatures = new ArrayList<Feature>();
         _isCharacterMatch = true;
         _newCharacterSet = false;
-
-        _questions = new ArrayList<>();
-        ArrayList<Feature> features =  _characters.get(1).get_characterFeatures();
-        for(Feature feature : features){
-            _questions.add(feature.get_featureLabel());
-        }
+        _newCharacterName = "";
+        _questions = (ArrayList<String>)_questionsCopy.clone();
+        nbQuestionsPosees = 0;
     }
 
 
@@ -130,7 +137,7 @@ public class ScoringMotor {
         String userAnswer = featureAnswer.get_featureChoice();
         for (Character character : _characters) {
             Feature feature = findFeatureByLabel(featureLabel, character.get_characterFeatures());
-            if (!feature.equals(null)) {
+            if (feature!=null) {
                 if (userAnswer.equals(R.string.probably)) {
                     if (feature.get_featureChoice().equals("oui")) {
                         character.set_characterScore(character.get_characterScore() + 1);
@@ -174,14 +181,22 @@ public class ScoringMotor {
     }
 
     public String proposeCharacter(){
-        if(_characters.size() != 0){
+        if(_characters.size() > 1){
+            return _characters.get(1).get_characterName();
+        }
+        else if(_characters.size() == 1){
             return _characters.get(0).get_characterName();
         }
         return "";
     }
 
-    public ArrayList<Feature> getListUserAnswers(){
-        return _answerFeatures;
+    private boolean featureExistInList(String featureLabel, ArrayList<Feature> featuresList){
+        for(Feature feature : featuresList){
+            if (feature.get_featureLabel().equals(featureLabel)){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -190,6 +205,28 @@ public class ScoringMotor {
      */
     public String nextQuestion(){
         if(_isCharacterMatch){
+            // aléatoirement de temps en temps l'appli posera des questions peu alimentées pour enrichir la base
+            // au détriment de la question la plus pertinente avec l'entropie
+            Random randomGenerator = new Random();
+            int randomInt = randomGenerator.nextInt(20);
+            if(randomInt == 0){
+                // recherche d'une caractéristique nouvellement ajoutée pour enrichir la base :
+                // la question aura une réponse pour le personnage qu'on cherche à présent
+                for(String question : _questions){
+                    int nbApparitionFeature = 0;
+                    for(Character character : _charactersCopy){
+                        if (featureExistInList(question,character.get_characterFeatures())){
+                            nbApparitionFeature ++;
+                        }
+                    }
+                    if(nbApparitionFeature < 3){
+                        return question;
+                    }
+                }
+            }
+
+
+
             String bestQuestion = "";
             double bestEntropie = 0;
 
@@ -248,10 +285,13 @@ public class ScoringMotor {
                     else{
                         _questions.remove(userAnswer.get_featureLabel());
                     }
-
                 }
             }
         }
+    }
+
+    public void addNewQuestion(String newQuestion){
+        _questionsCopy.add(newQuestion);
     }
 
 
@@ -288,6 +328,26 @@ public class ScoringMotor {
 
     public boolean is_newCharacterSet() {
         return _newCharacterSet;
+    }
+
+    public ArrayList<Feature> getListUserAnswers(){
+        return _answerFeatures;
+    }
+
+    public String get_newCharacterName() {
+        return _newCharacterName;
+    }
+
+    public void set_newCharacterName(String _newCharacterName) {
+        this._newCharacterName = _newCharacterName;
+    }
+
+    public int getNbQuestionsPosees() {
+        return nbQuestionsPosees;
+    }
+
+    public void setNbQuestionsPosees(int nbQuestionsPosees) {
+        this.nbQuestionsPosees = nbQuestionsPosees;
     }
 
     /**** END OF GETTERs, SETTERs *****/

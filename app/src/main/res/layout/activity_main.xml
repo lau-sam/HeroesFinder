@@ -136,7 +136,7 @@
         <Button
             android:id="@+id/resetBtn"
             android:gravity = "center"
-            android:background = "@drawable/reset"
+            android:background = "@drawable/recommencer"
             android:layout_width = "0dp"
             android:layout_height = "match_parent"
             android:layout_weight = "1"
@@ -167,7 +167,7 @@
         <Button
             android:id="@+id/resetBtnFinal"
             android:gravity = "center"
-            android:background = "@drawable/reset"
+            android:background = "@drawable/ok"
             android:layout_width = "0dp"
             android:layout_height = "match_parent"
             android:layout_weight = "1"
@@ -175,6 +175,117 @@
             android:layout_marginRight = "5sp"
             android:onClick="onAnswerButtonClick"/>
     </LinearLayout>
+
+    <LinearLayout
+    android:layout_gravity = "center"
+    android:orientation = "horizontal"
+    android:layout_width = "wrap_content"
+    android:layout_height = "wrap_content"
+    android:layout_weight = "1"
+    android:id="@+id/layout_continuer"
+    android:layout_centerInParent="true"
+    android:visibility="gone">
+
+    <Button
+        android:id="@+id/continuerBtn"
+        android:gravity = "center"
+        android:background = "@drawable/continuer"
+        android:layout_width = "0dp"
+        android:layout_height = "match_parent"
+        android:layout_weight = "1"
+        android:layout_marginLeft = "5sp"
+        android:layout_marginRight = "5sp"
+        android:onClick="onAnswerButtonClick"/>
+
+    <Button
+        android:id="@+id/arreterBtn"
+        android:gravity = "center"
+        android:background="@drawable/arreter"
+        android:layout_width = "0dp"
+        android:layout_height = "match_parent"
+        android:layout_weight = "1"
+        android:layout_marginLeft = "5sp"
+        android:layout_marginRight = "5sp"
+        android:onClick="onAnswerButtonClick"/>
+
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_gravity = "center"
+        android:orientation = "horizontal"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_weight = "1"
+        android:id="@+id/layout_choixProposerQuestion"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/proposerBtn"
+            android:gravity = "center"
+            android:background = "@drawable/proposer"
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:layout_marginLeft = "5sp"
+            android:layout_marginRight = "5sp"
+            android:onClick="onAnswerButtonClick"/>
+
+        <Button
+            android:id="@+id/recommencerBtn"
+            android:gravity = "center"
+            android:background="@drawable/recommencer"
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:layout_marginLeft = "5sp"
+            android:layout_marginRight = "5sp"
+            android:onClick="onAnswerButtonClick"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_gravity = "center"
+        android:orientation = "horizontal"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_weight = "1"
+        android:id="@+id/layout_proposerQuestion"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/proposerLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:text=""
+            android:ems="10"/>
+
+        <Button
+            android:id="@+id/proposerOkBtn"
+            android:gravity = "center"
+            android:background = "@drawable/ok"
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:layout_marginLeft = "5sp"
+            android:layout_marginRight = "5sp"
+            android:onClick="onAnswerButtonClick"/>
+
+        <Button
+            android:id="@+id/proposerAutreBtn"
+            android:gravity = "center"
+            android:background="@drawable/autre"
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:layout_marginLeft = "5sp"
+            android:layout_marginRight = "5sp"
+            android:onClick="onAnswerButtonClick"/>
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/fullscreen_content"
